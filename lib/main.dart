@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:device_frame/device_frame.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/home_page/home.dart';
@@ -60,9 +62,37 @@ class _TaskTrackerAppState extends State<TaskTrackerApp> {
           elevation: 0,
         ),
       ),
-      home: HomePage(
-        selectedColor: _accentColor,
-        onColorChanged: _changeAccentColor,
+      home: _PortfolioAppWrapper(
+        child: HomePage(
+          selectedColor: _accentColor,
+          onColorChanged: _changeAccentColor,
+        ),
+      ),
+    );
+  }
+}
+
+class _PortfolioAppWrapper extends StatelessWidget {
+  const _PortfolioAppWrapper({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDesktopWeb = kIsWeb && MediaQuery.sizeOf(context).width > 600;
+    if (!isDesktopWeb) {
+      return child;
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E1E1E),
+      body: Center(
+        child: DeviceFrame(
+          device: Devices.ios.iPhone13,
+          isFrameVisible: true,
+          orientation: Orientation.portrait,
+          screen: child,
+        ),
       ),
     );
   }
